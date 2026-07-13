@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>cipher.gen — password generator</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="crt-overlay" aria-hidden="true"></div>
+
+<main class="terminal">
+
+  <header class="term-header">
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="term-title">cipher.gen</span>
+  </header>
+
+  <section class="term-body">
+
+    <p class="prompt-line">
+      <span class="prompt-glyph">&gt;</span> generate --local --no-transmit
+      <span class="cursor" aria-hidden="true"></span>
+    </p>
+
+    <div class="password-stage">
+      <div id="password" class="password-display" role="status" aria-live="polite">—</div>
+      <div id="scramble" class="scramble-track" aria-hidden="true"></div>
+    </div>
+
+    <div class="entropy-row">
+      <div class="entropy-dial" role="meter" aria-label="Password strength">
+        <div id="entropyFill" class="entropy-fill" data-tone="idle" style="--fill:0"></div>
+        <div class="entropy-ticks" aria-hidden="true"></div>
+      </div>
+      <div class="entropy-readout">
+        <span id="entropyBits">0</span><span class="entropy-unit">bits</span>
+        <span id="entropyLabel" class="entropy-label">PICK A CHARSET</span>
+      </div>
+    </div>
+
+    <div class="controls">
+
+      <div class="control-row">
+        <label for="length" class="control-label">length</label>
+        <input type="range" id="length" min="6" max="64" value="20" />
+        <span id="lengthValue" class="length-value">20</span>
+      </div>
+
+      <fieldset class="charset-grid">
+        <legend class="control-label">character sets</legend>
+
+        <label class="charset-toggle">
+          <input type="checkbox" data-charset="lower" checked />
+          <span class="toggle-box"></span>
+          <span class="toggle-text">a–z</span>
+        </label>
+
+        <label class="charset-toggle">
+          <input type="checkbox" data-charset="upper" checked />
+          <span class="toggle-box"></span>
+          <span class="toggle-text">A–Z</span>
+        </label>
+
+        <label class="charset-toggle">
+          <input type="checkbox" data-charset="digits" checked />
+          <span class="toggle-box"></span>
+          <span class="toggle-text">0–9</span>
+        </label>
+
+        <label class="charset-toggle">
+          <input type="checkbox" data-charset="symbols" checked />
+          <span class="toggle-box"></span>
+          <span class="toggle-text">#$&amp;</span>
+        </label>
+      </fieldset>
+
+      <label class="charset-toggle standalone">
+        <input type="checkbox" id="excludeAmbiguous" />
+        <span class="toggle-box"></span>
+        <span class="toggle-text">exclude look-alikes (I l 1 O 0)</span>
+      </label>
+
+    </div>
+
+    <div class="action-row">
+      <button id="generateBtn" class="btn btn-primary" type="button">
+        <span>regenerate</span>
+        <kbd>space</kbd>
+      </button>
+      <button id="copyBtn" class="btn btn-ghost" type="button">
+        copy
+        <span id="copyStatus" class="copy-status">COPIED</span>
+      </button>
+    </div>
+
+  </section>
+
+  <footer class="term-footer">
+    generated with <code>crypto.getRandomValues</code> — nothing leaves this tab
+  </footer>
+
+</main>
+
+<script src="dist/app.js" type="module"></script>
+</body>
+</html>
