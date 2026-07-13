@@ -21,6 +21,7 @@
 
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -29,18 +30,28 @@
   }
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 32px 16px;
+  padding-top: max(32px, env(safe-area-inset-top));
+  padding-bottom: max(32px, env(safe-area-inset-bottom));
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
   background:
     radial-gradient(ellipse 900px 500px at 50% -10%, rgba(124, 255, 178, 0.06), transparent),
     var(--ink);
   font-family: var(--font-body);
   color: var(--text);
+  overscroll-behavior-y: contain;
 }
 
 /* subtle scanline texture — quiet, not a strobing gimmick */
@@ -250,32 +261,61 @@ input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
+  height: 44px;
+  background: transparent;
+  outline-offset: 6px;
+  padding: 0;
+  margin: 0;
+}
+
+/* the visible track sits inside the taller touch-friendly hit area */
+input[type="range"]::-webkit-slider-runnable-track {
   height: 2px;
   background: var(--hairline);
   border-radius: 1px;
-  outline-offset: 6px;
+}
+
+input[type="range"]::-moz-range-track {
+  height: 2px;
+  background: var(--hairline);
+  border-radius: 1px;
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--mint);
   border: 2px solid var(--ink);
   box-shadow: 0 0 0 1px var(--mint-dim);
   cursor: pointer;
-  margin-top: -6px;
+  margin-top: -10px;
 }
 
 input[type="range"]::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--mint);
   border: 2px solid var(--ink);
   box-shadow: 0 0 0 1px var(--mint-dim);
   cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  input[type="range"] {
+    height: 2px;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    width: 14px;
+    height: 14px;
+    margin-top: -6px;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+  }
 }
 
 .charset-grid {
@@ -297,6 +337,7 @@ input[type="range"]::-moz-range-thumb {
   align-items: center;
   gap: 7px;
   padding: 8px 8px;
+  min-height: 44px;
   background: var(--panel-raised);
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
@@ -363,6 +404,7 @@ input[type="range"]::-moz-range-thumb {
   font-size: 13px;
   letter-spacing: 0.02em;
   padding: 12px 16px;
+  min-height: 48px;
   border-radius: var(--radius);
   border: 1px solid var(--hairline);
   cursor: pointer;
@@ -370,6 +412,7 @@ input[type="range"]::-moz-range-thumb {
   align-items: center;
   justify-content: center;
   gap: 10px;
+  touch-action: manipulation;
   transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
@@ -395,6 +438,13 @@ input[type="range"]::-moz-range-thumb {
   padding: 2px 6px;
   border-radius: 2px;
   font-weight: 500;
+}
+
+/* no physical keyboard on touch devices, so the shortcut hint is just noise */
+@media (hover: none) and (pointer: coarse) {
+  .btn-primary kbd {
+    display: none;
+  }
 }
 
 .btn-ghost {
@@ -465,5 +515,31 @@ input[type="range"]::-moz-range-thumb {
   }
   .term-body {
     padding: 22px 16px 18px;
+  }
+}
+
+@media (max-width: 340px) {
+  body {
+    padding-left: max(10px, env(safe-area-inset-left));
+    padding-right: max(10px, env(safe-area-inset-right));
+  }
+  .action-row {
+    grid-template-columns: 1fr;
+  }
+  .btn {
+    width: 100%;
+  }
+}
+
+/* short/landscape viewports (phone rotated) — the fixed vertical centering
+   plus generous padding can push controls off-screen, so relax it */
+@media (max-height: 480px) {
+  body {
+    align-items: flex-start;
+    padding-top: max(16px, env(safe-area-inset-top));
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+  .term-body {
+    padding-top: 18px;
   }
 }
