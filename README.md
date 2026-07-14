@@ -7,7 +7,7 @@ A terminal-styled, client-side password generator. Everything runs in the browse
 ## Features
 
 - **Cryptographically secure** — passwords are generated with `crypto.getRandomValues`, not `Math.random`
-- **Configurable length** — 6 to 64 characters
+- **Configurable length** — 12 to 64 characters
 - **Toggleable character sets** — lowercase, uppercase, digits, and symbols
 - **Guaranteed coverage** — at least one character from every selected set is included, then the result is shuffled (Fisher–Yates) so guaranteed characters don't cluster at the start
 - **Exclude look-alikes** — optionally strip ambiguous characters like `I`, `l`, `1`, `O`, `0`
@@ -71,6 +71,15 @@ This compiles `src/app.ts` → `dist/app.js` per the settings in `tsconfig.json`
 ## Browser support
 
 Requires the Web Crypto API (`crypto.getRandomValues`) and the Clipboard API (`navigator.clipboard`), both available in all modern browsers (Chrome, Firefox, Safari, Edge).
+
+## Deploying securely
+
+This app has no backend and no external dependencies, so hosting it safely mostly comes down to *how* it's served:
+
+- **Serve over HTTPS only.** Most browsers refuse `navigator.clipboard` and treat the page as a non-secure context over plain HTTP, which breaks copy-to-clipboard and weakens Web Crypto guarantees.
+- **Apply the headers in `_headers`.** It sets a strict Content-Security-Policy, `X-Frame-Options: DENY` (clickjacking protection), `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, and HSTS. Netlify, Cloudflare Pages, and Vercel pick this file up automatically.
+- **GitHub Pages can't serve custom headers.** The `<meta http-equiv="Content-Security-Policy">` tag in `index.html` still applies most CSP directives there, but `frame-ancestors` (clickjacking protection) only works via a real HTTP header — so GitHub Pages deployments are not protected against being iframed. Use a host that supports the `_headers` file if that matters for your use case.
+- Everything still runs 100% client-side — nothing is ever sent to a server, including on copy (the clipboard is local to the browser).
 
 ## License
 

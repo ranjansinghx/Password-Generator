@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'; require-trusted-types-for 'script'; trusted-types 'none'" />
+<meta name="referrer" content="no-referrer" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#0b0e14" />
 <meta name="mobile-web-app-capable" content="yes" />
@@ -50,7 +52,7 @@
 
       <div class="control-row">
         <label for="length" class="control-label">length</label>
-        <input type="range" id="length" min="6" max="64" value="20" />
+        <input type="range" id="length" min="12" max="64" value="20" />
         <span id="lengthValue" class="length-value">20</span>
       </div>
 

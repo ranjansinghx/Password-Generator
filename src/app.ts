@@ -176,8 +176,9 @@ function regenerate() {
 
 async function copyPassword() {
   if (!currentPassword) return;
+  const copied = currentPassword;
   try {
-    await navigator.clipboard.writeText(currentPassword);
+    await navigator.clipboard.writeText(copied);
     el.copyStatus.textContent = "COPIED";
   } catch {
     el.copyStatus.textContent = "COPY FAILED";
@@ -187,6 +188,20 @@ async function copyPassword() {
   (copyPassword as unknown as { t?: number }).t = window.setTimeout(() => {
     el.copyStatus.classList.remove("visible");
   }, 1600);
+
+  // Best-effort: wipe the clipboard after 30s if it still holds this password.
+  // Reduces exposure via OS/clipboard-manager history if the tab is left open.
+  window.clearTimeout((copyPassword as unknown as { c?: number }).c);
+  (copyPassword as unknown as { c?: number }).c = window.setTimeout(async () => {
+    try {
+      const current = await navigator.clipboard.readText();
+      if (current === copied) {
+        await navigator.clipboard.writeText("");
+      }
+    } catch {
+      // Clipboard read may be denied/unsupported — nothing we can do silently.
+    }
+  }, 30000);
 }
 
 el.length.addEventListener("input", () => {
